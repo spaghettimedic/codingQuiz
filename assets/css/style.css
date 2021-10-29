@@ -1,12 +1,11 @@
-a {
-    margin: auto 0;
-    text-decoration: none;
-    color: blueviolet;
+header {
+    display: flex;
 }
 
 .timer {
-    float: right;
-    margin: auto 0;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
 }
 
 .startPrompt {
