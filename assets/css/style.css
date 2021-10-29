@@ -1,0 +1,117 @@
+a {
+    margin: auto 0;
+    text-decoration: none;
+    color: blueviolet;
+}
+
+.timer {
+    float: right;
+    margin: auto 0;
+}
+
+.startPrompt {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.p {
+    font-size: medium;
+}
+
+.btn-start {
+    margin: 10px auto;
+}
+
+.quiz-container {
+    width: 700px;
+    padding: 20px;
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px black;
+}
+
+.question {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: x-large;
+    margin: 0;
+    padding-bottom: 10px;
+}
+
+button {
+    display: block;
+    background-color: rgb(80, 4, 80);
+    border-radius: 5px;
+    border-style: none;
+    text-align: left;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: medium;
+    color: white;
+    cursor: pointer;
+    padding: 5px 10px;
+    margin-left: 5px;
+}
+
+.options {
+    height: 40px;
+    margin: 5px 0;
+    padding: 0 10px;
+    min-width: 150px;
+    max-width: 100%;
+    white-space: nowrap;
+}
+
+button:hover {
+    background-color: blueviolet;
+}
+
+.answerConfirm hr, .answerConfirm p {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: x-large;
+    color: lightgray;
+}
+
+.done, h2 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+label, .finalScore, li {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: large;
+}
+
+ul {
+    list-style-type: none;
+}
+
+li {
+    background-color: rgba(179, 112, 218, 0.5);
+    width: 150px;
+    position: relative;
+    left: -40px;
+    margin: 5px 0;
+}
+
+input {
+    width: 100px;
+}
+
+.initialsSubmit, .goBack, .clearHighScores {
+    display: inline-block;
+}
+
+.btn-view-scores {
+    color: blueviolet;
+    background-color: transparent;
+}
+
+.btn-view-scores:hover {
+    background-color: transparent;
+}
