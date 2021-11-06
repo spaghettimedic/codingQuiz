@@ -40,7 +40,7 @@ header {
     padding-bottom: 10px;
 }
 
-button {
+button, .initialsSubmit {
     display: block;
     background-color: rgb(80, 4, 80);
     border-radius: 5px;
@@ -102,6 +102,7 @@ input {
 
 .initialsSubmit, .goBack, .clearHighScores {
     display: inline-block;
+    text-align: center;
 }
 
 .btn-view-scores {

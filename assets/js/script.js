@@ -6,7 +6,7 @@ var questions = [
     },
     {
         question: "The condition of an if/else statement is enclosed with _________.",
-        answer: "2. curly brackets",
+        answer: "3. parentheses",
         options: ["1. quotes", "2. curly brackets", "3. parentheses", "4. square brackets"]
     },
     {
@@ -15,7 +15,7 @@ var questions = [
         options: ["1. numbers and strings", "2. other arrays", "3. booleans", "4. all of the above"]
     },
     {
-        question: "String values must enclosed within ________ when being assigned to variables.",
+        question: "String values must be enclosed within ________ when being assigned to variables.",
         answer: "3. quotes",
         options: ["1. commas", "2. curly brackets", "3. quotes", "4. parentheses"]
     },
@@ -31,135 +31,160 @@ var btnStartEl = document.querySelector("#btn-start");
 var headerEl = document.querySelector("header");
 var timerEl = document.querySelector("#timer");
 var btnHighScoreEl = document.querySelector("#highScores");
+var btnContainerEl = document.querySelector("#button-container");
 
 
+var userInfo = {
+    initials: "",
+    score: ""
+};
 var sec = 75;
+let counter = 0;
 
 
-function timer() {
-    var timer = 
-        setInterval(function() {
-            timerEl.innerHTML = "Timer: " + sec;
-            sec--;
-            if (sec < 0) {
-                clearInterval(timer);
-                return alert("You ran out of time!");
-            };
+var timer = function() {
+    var time = setInterval(function() {
+        timerEl.innerHTML = "Timer: " + sec;
+        sec--;
+        if (sec < 0) {
+            clearInterval(time);
+            return alert("You ran out of time!");
+        };
+        if (counter >= questions.length) {
+            clearInterval(time);
+        };
     }, 1000);
 };
 
-
 var queGenerator = function() {
-    
     quizContainerEl.innerHTML = "";
+    var question = questions[counter].question;
 
-    for (let i = 0; i < questions.length; i++) {
-        var question = questions[i].question;
-        var answer = questions[i].answer;
+    // create a p element for every question
+    var questionEl = document.createElement("p");
+    questionEl.classList = "question";
+    questionEl.textContent = question;
+    quizContainerEl.appendChild(questionEl);
 
-        // create a p element for every question
-        var questionEl = document.createElement("p");
-        questionEl.classList = "question";
-        questionEl.textContent = question;
-        quizContainerEl.appendChild(questionEl);
+    // create a div to hold all the btnOptions and assign eventListener
+    var btnContainerEl = document.createElement("div");
+    btnContainerEl.id = "button-container";
+    quizContainerEl.appendChild(btnContainerEl);
 
-        for (let o = 0; o < questions[i].options.length; o++) {
-            var option = questions[i].options;
+    for (let i = 0; i < questions[counter].options.length; i++) {
+        var option = questions[counter].options;
 
-            // create a button element for every option
-            var btnOptionEl1 = document.createElement("button");
-            btnOptionEl1.classList = "options";
-            btnOptionEl1.textContent = option[o];
-            quizContainerEl.appendChild(btnOptionEl1);
+        // create a button element for every option
+        var btnOptionEl = document.createElement("button");
+        btnOptionEl.classList = "options";
+        btnOptionEl.textContent = option[i];
+        btnContainerEl.appendChild(btnOptionEl);
+        btnContainerEl.addEventListener("click", checkAnswer);
+    };
+};
 
-            var optionSelected = document.querySelectorAll(".options");
+var checkAnswer = function(event) {
+    var checkAnswerEl = document.createElement("div");
+    checkAnswerEl.classList = "answerConfirm";
+    checkAnswerEl.id = "answerConfirm";
+    checkAnswerEl.innerHTML = "";
+    quizContainerEl.appendChild(checkAnswerEl);
 
-            // add event listener to option buttons and perform necessary actions based on user's choice
-            for (var b = 0; b < optionSelected.length; b++) {
-
-                // create a div to hold the answerConfirm message when an option is selected
-                var answerConfirmEl = document.createElement("div");
-                answerConfirmEl.classList = "answerConfirm";
-                answerConfirmEl.id = "answerConfirm";
-
-                if (this.textContent === answer) {
-                    optionSelected[b].addEventListener("click", function(){
-                        answerConfirmEl.innerHTML = "<br><hr><p><em>Correct!</em></p>"
-                        quizContainerEl.appendChild(answerConfirmEl);
-                        question++;
-                        option++;
-                        answer++;
-                        
-                        console.log("answerRight!");
-                    })
-                } else {
-                    optionSelected[b].addEventListener("click", function() {
-                        answerConfirmEl.innerHTML = "<br><hr><p><em>Wrong!</em></p>"
-                        quizContainerEl.appendChild(answerConfirmEl);
-                        question++;
-                        option++;
-                        answer++;
-
-                        sec = sec - 10;
-                        if (sec < 0) {
-                            sec = 0;
-                        };
-                        console.log("answerWrong!");
-                        console.log(answer);
-                    });
-                };
-            };
+    if (event.target.innerHTML === questions[counter].answer) {
+        checkAnswerEl.innerHTML = "<hr><p><em>Correct!</em></p>"
+    } else {
+        checkAnswerEl.innerHTML = "<hr><p><em>Wrong!</em></p>"
+        sec = sec - 10;
+        if (sec < 0) {
+            sec = 0;
+            timerScore = sec;
+            if (timerScore < 0) {
+                timerScore = 0;
+            }
+            alert("You ran out of time!");
+            clearInterval();
+            handleScore();
+            return timerScore;
         };
+    };
+    counter++;
+    if (counter >= questions.length) {
+        timerScore = sec;
+        clearInterval();
+        handleScore();
+        return timerScore;
+    } else {
+        queGenerator();
     }
-    // capture timerScore when all questions have been answered
-    var timerScore = sec
-    handleScore();
-
 };
 
 
 // will store the current score if it is high enough in localStorage
 var handleScore = function() {
 
-    var userInfo = {
-        initials: "",
-        score: timerScore.value
-    };
-
     quizContainerEl.innerHTML = "";
+    userInfo.score = timerScore;
 
     var yourScoreEl = document.createElement("div");
     yourScoreEl.classList = "yourScore";
     yourScoreEl.id = "yourScore";
     yourScoreEl.innerHTML = "<form><p class='done'>All Done!</p>" +
-    "<p class='finalScore'>Your final score is " + userInfo.score + "</p>" +
+    "<p class='finalScore'>Your final score is " +  userInfo.score + "</p>" +
     "<label for='initials'>Enter initials: </label>" +
-    "<input id='userInput' type='text' placeholder='initials'>" +
-    "<button class='initialsSubmit'>Submit</button></form>";
+    "<input id='initials' type='text' name='initials' placeholder='initials'>" +
+    "<input type='submit' class='initialsSubmit'></form>";
+    quizContainerEl.appendChild(yourScoreEl);
 
-    userInfo.initials = document.getElementById("userInput").value;
-
-    localStorage.setItem("initials", userInfo.initials);
-    localStorage.setItem("score", userInfo.score);
+    document.querySelector(".initialsSubmit").addEventListener("click", function(event) {
+        event.preventDefault();
+        var initials = document.getElementById("initials").value;
+        userInfo.initials = initials;
+        if (userInfo.initials === "" || userInfo.initials === null) {
+            alert("Please enter your initials");
+            return handleScore();
+        } else {
+            localStorage.setItem("initials", userInfo.initials);
+            localStorage.setItem("score", userInfo.score);
+            viewHighScores();
+        }
+    });
 };
 
 // will access localStorage on button click
 function viewHighScores() {
     quizContainerEl.innerHTML = "";
+    var highScoreInitialsKey = localStorage.getItem("initials");
+    var highScoreScoreKey = localStorage.getItem("score");
     var highScoreEl = document.createElement("div");
     highScoreEl.innerHTML = "<h2>High Scores</h2>" +
-    "<ul>" + "</ul>" +
+    "<ul>" + 
+    // insert <li> from localStorage
+    "</ul>" +
     "<br><button class='goBack' id='goBack'>Go Back</button>" +
-    "<button class='clearHighScores'>Clear High Scores</button>";
+    "<button class='clearHighScores' id='clearHighScores'>Clear High Scores</button>";
     quizContainerEl.appendChild(highScoreEl);
 
-    var btnGoBackEl = document.getElementById("goBack");
+    var ulEL = document.querySelector("ul");
 
+    for (var i = 0; i < localStorage.length; i++) {
+        var highScoreInitials = highScoreInitialsKey[i];
+        var highScoreScore = highScoreScoreKey[i];
 
-    btnGoBackEl.addEventListener("click", function() {
+        var liEl = document.createElement("li");
+        liEl.innerHTML = highScoreInitials + " - " + highScoreScore
+
+        ulEL.appendChild(liEl);
+    };
+
+    document.getElementById("goBack").addEventListener("click", function() {
         window.location.reload();
     });
+    document.getElementById("clearHighScores").addEventListener("click", function() {
+        localStorage.clear();
+        viewHighScores();
+    });
 };
+
 
 btnHighScoreEl.addEventListener("click", viewHighScores);
 btnStartEl.addEventListener("click", queGenerator);
