@@ -33,10 +33,7 @@ var timerEl = document.querySelector("#timer");
 var btnHighScoreEl = document.querySelector("#highScores");
 var btnContainerEl = document.querySelector("#button-container");
 
-var userInfo = {
-    initials: [],
-    score: []
-};
+var userInfo = [];
 var sec = 75;
 let counter = 0;
 
@@ -95,16 +92,8 @@ var checkAnswer = function(event) {
 
     if (event.target.innerHTML === questions[counter].answer) {
         checkAnswerEl.innerHTML = "<hr><p><em>Correct!</em></p>";
-        console.log(checkAnswerEl.innerHTML);
-        quizContainerEl.appendChild(checkAnswerEl);
-        console.log(checkAnswerEl);
-        console.log(quizContainerEl);
     } else {
         checkAnswerEl.innerHTML = "<hr><p><em>Wrong!</em></p>";
-        console.log(checkAnswerEl.innerHTML);
-        quizContainerEl.appendChild(checkAnswerEl);
-        console.log(checkAnswerEl);
-        console.log(quizContainerEl);
         sec = sec - 10;
     };
     counter++;
@@ -114,10 +103,11 @@ var checkAnswer = function(event) {
         handleScore();
         return timerScore;
     } else {
-        queGenerator();
+        setTimeout(()=> {
+            queGenerator();
+        }, 500);
     }
 };
-
 
 // will store the current score if it is high enough in localStorage
 var handleScore = function() {
@@ -138,16 +128,24 @@ var handleScore = function() {
         event.preventDefault();
         var initials = document.getElementById("initials").value;
 
-        if (userInfo.initials === "" || userInfo.initials === null) {
+        if (initials === "" || initials === null) {
             alert("Please enter your initials");
-            return handleScore();
+            handleScore();
         } else {
-            userInfo = localStorage.getItem("highScores");
+            userInfo = localStorage.getItem("highScores") || "[]";
             userInfo = JSON.parse(userInfo);
-            userInfo.initials.push(initials);
-            userInfo.score.push(timerScore);
-            // userInfo.score.sort((a, b) => b.userInfo.score - a.userInfo.score);
-            // userInfo.score.splice(5);
+            
+            if (userInfo.length) {
+                userInfo.push({[initials]: timerScore})
+                userInfo.sort((a, b) => {
+                    if (Object.values(a)[0] < Object.values(b)[0]) return 1;
+                    else if (Object.values(a)[0] > Object.values(b)[0]) return -1;
+                    else return 0;
+                });
+                userInfo = userInfo.slice(0, 5);
+            } else {
+                userInfo.push({[initials]: timerScore})
+            }
             localStorage.setItem("highScores", JSON.stringify(userInfo));
             viewHighScores();
         }
@@ -170,10 +168,11 @@ function viewHighScores() {
 
     userInfo = JSON.parse(localStorage.getItem("highScores"));
 
-    for (var i = 0; i < userInfo.initials.length; i++) {
-        var highScoreNumber = parseInt([i]) + 1;
+    for (var i = 0; i < userInfo.length; i++) {
+        const [key, value] = Object.entries(userInfo[i])[0];
+        var highScoreNumber = (i + 1);
         var liEl = document.createElement("li");
-        liEl.innerHTML = highScoreNumber + ". " + userInfo.initials[i] + " - " + userInfo.score[i];
+        liEl.innerHTML = highScoreNumber + ". " + key  + " - " + value;
         ulEL.appendChild(liEl);
     };
 
