@@ -143,8 +143,7 @@ var handleScore = function() {
             alert("Please enter your initials");
             return handleScore();
         } else {
-            localStorage.setItem("initials", userInfo.initials);
-            localStorage.setItem("score", userInfo.score);
+            localStorage.setItem("score", JSON.stringify(userInfo));
             viewHighScores();
         }
     });
@@ -153,12 +152,10 @@ var handleScore = function() {
 // will access localStorage on button click
 function viewHighScores() {
     quizContainerEl.innerHTML = "";
-    var highScoreInitialsKey = localStorage.getItem("initials");
-    var highScoreScoreKey = localStorage.getItem("score");
     var highScoreEl = document.createElement("div");
     highScoreEl.innerHTML = "<h2>High Scores</h2>" +
     "<ul>" + 
-    // insert <li> from localStorage
+    // insert userInfo <li> from localStorage
     "</ul>" +
     "<br><button class='goBack' id='goBack'>Go Back</button>" +
     "<button class='clearHighScores' id='clearHighScores'>Clear High Scores</button>";
@@ -166,15 +163,12 @@ function viewHighScores() {
 
     var ulEL = document.querySelector("ul");
 
-    for (var i = 0; i < localStorage.length; i++) {
-        var highScoreInitials = highScoreInitialsKey[i];
-        var highScoreScore = highScoreScoreKey[i];
+    userInfo = localStorage.getItem(userInfo);
+    var parsedScore = JSON.parse(userInfo)
 
-        var liEl = document.createElement("li");
-        liEl.innerHTML = highScoreInitials + " - " + highScoreScore
-
-        ulEL.appendChild(liEl);
-    };
+    var liEl = document.createElement("li");
+    liEl.innerHTML = " " + parsedScore;
+    ulEL.appendChild(liEl);
 
     document.getElementById("goBack").addEventListener("click", function() {
         window.location.reload();
