@@ -35,8 +35,8 @@ var btnContainerEl = document.querySelector("#button-container");
 
 
 var userInfo = {
-    initials: "",
-    score: ""
+    initials: [],
+    score: []
 };
 var sec = 75;
 let counter = 0;
@@ -123,13 +123,13 @@ var checkAnswer = function(event) {
 var handleScore = function() {
 
     quizContainerEl.innerHTML = "";
-    userInfo.score = timerScore;
+    // userInfo.score = timerScore;
 
     var yourScoreEl = document.createElement("div");
     yourScoreEl.classList = "yourScore";
     yourScoreEl.id = "yourScore";
     yourScoreEl.innerHTML = "<form><p class='done'>All Done!</p>" +
-    "<p class='finalScore'>Your final score is " +  userInfo.score + "</p>" +
+    "<p class='finalScore'>Your final score is " +  timerScore + "</p>" +
     "<label for='initials'>Enter initials: </label>" +
     "<input id='initials' type='text' name='initials' placeholder='initials'>" +
     "<input type='submit' class='initialsSubmit'></form>";
@@ -138,12 +138,16 @@ var handleScore = function() {
     document.querySelector(".initialsSubmit").addEventListener("click", function(event) {
         event.preventDefault();
         var initials = document.getElementById("initials").value;
-        userInfo.initials = initials;
         if (userInfo.initials === "" || userInfo.initials === null) {
             alert("Please enter your initials");
             return handleScore();
         } else {
-            localStorage.setItem("score", JSON.stringify(userInfo));
+            userInfo.initials.push(initials);
+            userInfo.score.push(timerScore);
+            userInfo.score.sort((a, b) => b.userInfo.score - a.userInfo.score);
+            userInfo.score.splice(5);
+            console.log(userInfo);
+            localStorage.setItem("highScores", JSON.stringify(userInfo));
             viewHighScores();
         }
     });
@@ -163,11 +167,10 @@ function viewHighScores() {
 
     var ulEL = document.querySelector("ul");
 
-    userInfo = localStorage.getItem(userInfo);
-    var parsedScore = JSON.parse(userInfo)
+    userInfo = JSON.parse(localStorage.getItem("highScores"));
 
     var liEl = document.createElement("li");
-    liEl.innerHTML = " " + parsedScore;
+    liEl.innerHTML = userInfo.initials + " - " + userInfo.score;
     ulEL.appendChild(liEl);
 
     document.getElementById("goBack").addEventListener("click", function() {
