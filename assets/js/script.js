@@ -166,6 +166,10 @@ function viewHighScores() {
 
     var ulEL = document.querySelector("ul");
 
+    document.getElementById("goBack").addEventListener("click", function() {
+        window.location.reload();
+    });
+    
     userInfo = JSON.parse(localStorage.getItem("highScores"));
 
     for (var i = 0; i < userInfo.length; i++) {
@@ -176,11 +180,9 @@ function viewHighScores() {
         ulEL.appendChild(liEl);
     };
 
-    document.getElementById("goBack").addEventListener("click", function() {
-        window.location.reload();
-    });
     document.getElementById("clearHighScores").addEventListener("click", function() {
-        localStorage.clear();
+        userInfo = [];
+        localStorage.setItem("highScores", JSON.stringify(userInfo));
         viewHighScores();
     });
 };
